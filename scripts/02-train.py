@@ -1,7 +1,7 @@
 #   Two mode of training available:
 #       - BCE: CNN training, NOT Adversarial Training here. Only learns the generator network.
 #       - SALGAN: Adversarial Training. Updates weights for both Generator and Discriminator.
-#   The training used data previously  processed using "01-data_preocessing.py"
+#   The training uses data previously processed using "01-data_preocessing.py"
 import os
 import numpy as np
 import sys
@@ -21,8 +21,6 @@ from utils import *
 import pdb
 import matplotlib.pyplot as plt
 
-#flag = str(sys.argv[1])
-#lr = str(sys.argv[2])
 flag = 'salgan'
 
 def bce_batch_iterator(model, train_data, validation_sample):
@@ -66,7 +64,7 @@ def bce_batch_iterator(model, train_data, validation_sample):
 
 
 def salgan_batch_iterator(model, train_data, validation_sample):
-    num_epochs = 301 # fy: change from 301
+    num_epochs = 301 
     nr_batches_train = int(len(train_data) / model.batch_size)
     n_updates = 1
     
@@ -117,50 +115,37 @@ def salgan_batch_iterator(model, train_data, validation_sample):
             #pdb.set_trace()
             # train generator with one batch and discriminator with next batch
             if n_updates % 2 == 0:
-                #G_obj, D_obj, G_cost, KLsc, CCsc, NSSsc, prediction = model.G_trainFunction(batch_input, batch_output_sal, batch_output_fixa, inv_sigmaKL, inv_sigmaCC, inv_sigmaNSS, adaptive_Glr)
-                #G_obj, D_obj, G_cost, BCEsc, KLsc, CCsc, NSSsc, prediction = model.G_trainFunction(batch_input, batch_output_sal, batch_output_fixa, batch_output_wei, inv_sigmaBCE, inv_sigmaKL, inv_sigmaCC, inv_sigmaNSS, adaptive_Glr)
-                #G_obj, D_obj, G_cost, KLsc, CCsc, NSSsc, prediction = model.G_trainFunction(batch_input, batch_output_sal, batch_output_fixa, batch_output_wei, inv_sigmaKL, inv_sigmaCC, inv_sigmaNSS, adaptive_Glr)
-                G_obj, D_obj, G_cost = model.G_trainFunction(batch_input, batch_output_sal, batch_output_fixa)
-                #print '\n inv_std: ', BCEsc, KLsc, CCsc, NSSsc, inv_sigmaKL, inv_sigmaCC, inv_sigmaNSS
+                G_obj, D_obj, G_cost, KLsc, CCsc, NSSsc, prediction = model.G_trainFunction(batch_input, batch_output_sal, batch_output_fixa, batch_output_wei, inv_sigmaKL, inv_sigmaCC, inv_sigmaNSS, adaptive_Glr)
+                #G_obj, D_obj, G_cost = model.G_trainFunction(batch_input, batch_output_sal, batch_output_fixa)
                 d_cost += D_obj
                 g_cost += G_obj
                 e_cost += G_cost
             else:
-                #G_obj, D_obj, G_cost, KLsc, CCsc, NSSsc, prediction = model.D_trainFunction(batch_input, batch_output_sal, batch_output_fixa, inv_sigmaKL, inv_sigmaCC, inv_sigmaNSS, adaptive_Dlr)
-                #G_obj, D_obj, G_cost, BCEsc, KLsc, CCsc, NSSsc, prediction = model.D_trainFunction(batch_input, batch_output_sal, batch_output_fixa, batch_output_wei, inv_sigmaBCE, inv_sigmaKL, inv_sigmaCC, inv_sigmaNSS, adaptive_Dlr)
-                #G_obj, D_obj, G_cost, KLsc, CCsc, NSSsc, prediction = model.D_trainFunction(batch_input, batch_output_sal, batch_output_fixa, batch_output_wei, inv_sigmaKL, inv_sigmaCC, inv_sigmaNSS, adaptive_Dlr)
-                G_obj, D_obj, G_cost = model.D_trainFunction(batch_input, batch_output_sal, batch_output_fixa)
-                #print '\n inv_std: ', BCEsc, KLsc, CCsc, NSSsc, inv_sigmaKL, inv_sigmaCC, inv_sigmaNSS
+                G_obj, D_obj, G_cost, KLsc, CCsc, NSSsc, prediction = model.D_trainFunction(batch_input, batch_output_sal, batch_output_fixa, batch_output_wei, inv_sigmaKL, inv_sigmaCC, inv_sigmaNSS, adaptive_Dlr)
+                #G_obj, D_obj, G_cost = model.D_trainFunction(batch_input, batch_output_sal, batch_output_fixa)
                 d_cost += D_obj
                 g_cost += G_obj
                 e_cost += G_cost
-            
-            #eval_score[ (n_updates-1) % nr_batches_train, :] = np.array([KLsc, CCsc, NSSsc, BCEsc])
-            #eval_score[ (n_updates-1) % nr_batches_train, :] = np.array([KLsc, CCsc, NSSsc])
-
+              
             n_updates += 1
 
         g_cost /= nr_batches_train
         d_cost /= nr_batches_train
         e_cost /= nr_batches_train
-        #pdb.set_trace()
         
         inv_sigmaKL = 1.0 / eval_score[:, 0].std()
         inv_sigmaCC = 1.0 / eval_score[:, 1].std()
         inv_sigmaNSS = 1.0 / eval_score[:, 2].std()
-        #inv_sigmaBCE = 1.0 / eval_score[:, 3].std()
-     
+       
         meanKL = eval_score[:, 0].mean()
         meanCC = eval_score[:, 1].mean()
         meanNSS = eval_score[:, 2].mean()
-        #meanBCE = eval_score[:, 3].mean()
+               
         
+        print '\n std: ', eval_score[:, 0].std(), eval_score[:, 1].std(), eval_score[:, 2].std()
+        print 'mean: ', meanKL, meanCC, meanNSS
         
-        
-        print '\n std: ', eval_score[:, 0].std(), eval_score[:, 1].std(), eval_score[:, 2].std() #, eval_score[:, 3].std()
-        print 'mean: ', meanKL, meanCC, meanNSS, meanBCE
-        
-        # Save weights every 3 epoch
+        # Save weights every 10 epoch
         if current_epoch % 10 == 0:
             np.savez(DIR_TO_SAVE + '/1745_90_gen_modelWeights{:04d}.npz'.format(current_epoch), *lasagne.layers.get_all_param_values(model.net['output']))
             np.savez(DIR_TO_SAVE + '/1745_90_discrim_modelWeights{:04d}.npz'.format(current_epoch), *lasagne.layers.get_all_param_values(model.discriminator['prob']))
@@ -175,13 +160,10 @@ def train():
     """
     # Load data
     print 'Loading training data...'
-    #with open('../saliency-2016-lsun/validationSample240x320.pkl', 'rb') as f:
     with open(TRAIN_DATA_DIR, 'rb') as f:
         train_data = pickle.load(f)
     print '-->done!'
-    #pdb.set_trace()
     print 'Loading validation data...'
-    # with open('../saliency-2016-lsun/validationSample240x320.pkl', 'rb') as f:
     with open(VAL_DATA_DIR, 'rb') as f:
         validation_data = pickle.load(f)
     print '-->done!'
@@ -205,17 +187,10 @@ def train():
     elif flag == 'bce':
         model = ModelBCE(INPUT_SIZE[0], INPUT_SIZE[1])
         # Load a pre-trained model
-        #load_weights(net=model.net['output'], path='gen_', epochtoload=90) # fy:load pretrained BCE model
+        #load_weights(net=model.net['output'], path='gen_', epochtoload=90) # load pretrained BCE model
         bce_batch_iterator(model, train_data, validation_sample.image.data)
     else:
         print "Invalid input argument."
 if __name__ == "__main__":
     train()
-    
-    
-    
-    
-    
-    
-    
-    
+  
