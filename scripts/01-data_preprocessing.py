@@ -24,43 +24,12 @@ listImgFiles = [k.split('/')[-1].split('.')[0] for k in glob.glob(os.path.join(p
 listTestImages = [k.split('/')[-1].split('.')[0] for k in glob.glob(os.path.join(pathToImages, '*test*'))]
 
 
-'''
-for currFile in tqdm(listImgFiles):
-    tt = dataRepresentation.Target(os.path.join(pathToImages, currFile + '.jpg'),
-                                   os.path.join(pathToMaps, currFile + '.png'),
-                                   os.path.join(pathToFixationMaps, currFile + '.mat'),
-                                   dataRepresentation.LoadState.loaded, dataRepresentation.InputType.image,
-                                   dataRepresentation.LoadState.loaded, dataRepresentation.InputType.imageGrayscale,
-                                   dataRepresentation.LoadState.unloaded, dataRepresentation.InputType.empty)
-    # if tt.image.getImage().shape[:2] != (480, 640):
-    #    print 'Error:', currFile
-    imageResized = cv2.cvtColor(cv2.resize(tt.image.getImage(), img_size, interpolation=cv2.INTER_AREA),
-                                cv2.COLOR_RGB2BGR)
-    saliencyResized = cv2.resize(tt.saliency.getImage(), salmap_size, interpolation=cv2.INTER_AREA)
-    cv2.imwrite(os.path.join(pathOutputImages, currFile + '.png'), imageResized)
-    cv2.imwrite(os.path.join(pathOutputMaps, currFile + '.png'), saliencyResized)
-# Resize test files
-for currFile in tqdm(listTestImages):
-    tt = dataRepresentation.Target(os.path.join(pathToImages, currFile + '.jpg'),
-                                   os.path.join(pathToMaps, currFile + '.mat'),
-                                   os.path.join(pathToFixationMaps, currFile + '.mat'),
-                                   dataRepresentation.LoadState.loaded,dataRepresentation.InputType.image,
-                                   dataRepresentation.LoadState.unloaded, dataRepresentation.InputType.empty,
-                                   dataRepresentation.LoadState.unloaded, dataRepresentation.InputType.empty)
-    imageResized = cv2.cvtColor(cv2.resize(tt.image.getImage(), img_size, interpolation=cv2.INTER_AREA),
-                                cv2.COLOR_RGB2BGR)
-    cv2.imwrite(os.path.join(pathOutputImages, currFile + '.png'), imageResized)
-'''
 # LOAD DATA
 
 # Train
-
-#listFilesTrain = [k for k in listImgFiles if 'train' in k and np.mod(int(k[10]),3)==1 and np.mod(int(k[11]),3)==1]
 listFilesTrain = [k for k in listImgFiles if 'train' in k]
-
 trainData = []
 for currFile in tqdm(listFilesTrain):
-    #pdb.set_trace()
     trainData.append(dataRepresentation.Target(os.path.join(pathOutputImages, currFile + '.png'),
                                                os.path.join(pathOutputMaps, currFile + '.png'),
                                                os.path.join(pathToFixationMaps, currFile + '.png'),
@@ -69,12 +38,11 @@ for currFile in tqdm(listFilesTrain):
                                                dataRepresentation.LoadState.loaded, dataRepresentation.InputType.imageGrayscale,
                                                dataRepresentation.LoadState.loaded, dataRepresentation.InputType.fixationMap,
                                                dataRepresentation.LoadState.loaded, dataRepresentation.InputType.imageGrayscale))
-with open(os.path.join(pathToPickle, 'train1845_180_with_fixasmall_wei.pickle'), 'wb') as f:      # 45 degree, every 10 frames, data of 2018
+with open(os.path.join(pathToPickle, 'train1745_180_with_fixa_wei.pickle'), 'wb') as f:
     pickle.dump(trainData, f)
 
 # Validation
 listFilesValidation = [k for k in listImgFiles if 'val' in k]
-
 validationData = []
 for currFile in tqdm(listFilesValidation):
     validationData.append(dataRepresentation.Target(os.path.join(pathOutputImages, currFile + '.png'),
@@ -85,21 +53,5 @@ for currFile in tqdm(listFilesValidation):
                                                     dataRepresentation.LoadState.loaded, dataRepresentation.InputType.imageGrayscale,
                                                     dataRepresentation.LoadState.loaded, dataRepresentation.InputType.fixationMap,
                                                     dataRepresentation.LoadState.loaded, dataRepresentation.InputType.imageGrayscale))
-with open(os.path.join(pathToPickle, 'validation1845_180_with_fixasmall_wei.pickle'), 'wb') as f:
+with open(os.path.join(pathToPickle, 'validation1845_180_with_fixa_wei.pickle'), 'wb') as f:
     pickle.dump(validationData, f)
-''''
-# Test
-
-listFilesTrain = [k for k in listImgFiles if 'test_' in k]
-testData = []
-
-for currFile in tqdm(listTestImages):
-    testData.append(dataRepresentation.Target(os.path.join(pathOutputImages, currFile + '.jpg'),
-                                              os.path.join(pathOutputMaps, currFile + '.png'),
-                                              dataRepresentation.LoadState.loaded, dataRepresentation.InputType.image,
-                                              dataRepresentation.LoadState.unloaded,
-                                              dataRepresentation.InputType.empty))
-
-with open(os.path.join(pathToPickle, 'testData.pickle'), 'wb') as f:
-     pickle.dump(testData, f)
-'''
