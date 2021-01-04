@@ -6,10 +6,12 @@
 360° media allows observers to explore the scene inall directions. The consequence is that the human visual attentionis guided by not only the perceived area in the viewport but alsothe overall content in 360°. In this paper, we propose a methodto estimate the 360° saliency map which extracts salient featuresfrom the entire 360° image in each viewport in three differentField of Views (FoVs). Our model is first pretrained with a large-scale 2D image dataset to enable the interpretation of semanticcontents, then fine-tuned with a relative small 360° image dataset. A novel weighting loss function attached with stretch weightedmaps is introduced to adaptively weight the losses of three evaluation metrics and attenuate the impact of stretched regions inequirectangular projection during training process. Experimentalresults demonstrate that our model achieves better performancewith the integration of three FoVs and its diverse viewportimages. Results also show that the adaptive weighting losses andstretch weighted maps effectively enhance the evaluation scorescompared to the fixed weighting losses solutions. Comparing  toother state of the art models, our method surpasses them on three different datasets and ranks the top using 5 performanceevaluation metrics on the Salient360! benchmark set.
 
 ## Architecture
-![qualitative results](https://github.com/FannyChao/MV-SalGAN360/blob/master/figs/overall_diagram.jpg)
+(https://github.com/FannyChao/MV-SalGAN360/blob/master/figs/overall_diagram.jpg)
 
 
 ## Visual Results
+![qualitative results on Salient360! 2017 dataset](https://github.com/FannyChao/MV-SalGAN360/blob/master/figs/salient17_compare_gray.jpg)
+![qualitative results on Saliency in VR dataset](https://github.com/FannyChao/MV-SalGAN360/blob/master/figs/stanford_compare_gray.jpg)
 
 
 ## Requirements
