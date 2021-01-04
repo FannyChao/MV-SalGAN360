@@ -51,16 +51,7 @@ views = [0 0 0; % Front
          -90 0 0; % Left
          0 90 0; % Top
          0 -90 0]; % Bottom 
-%{     
-views = [0 0-60 0; % Front
-         90 0 0-60; % Right
-         180 0+60 0; % Back
-         -90 0 0+60; % Left
-         0 90-60 0; % Top
-         0 -90-60 0]; % Bottom      
-%}
-
-%views(:,1) = views(:,1) + headmove_h;     
+    
 headmove_vm = [0 headmove_v 0; 0 0 headmove_v; 0 -headmove_v 0; 0 0 -headmove_v; 0 headmove_v 0; 0 headmove_v 0];
 views = views + headmove_vm;
 
@@ -158,4 +149,3 @@ for idx = 1 : size(views,1)
 end
 
 end
-
