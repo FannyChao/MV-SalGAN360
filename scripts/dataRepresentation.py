@@ -108,15 +108,7 @@ class ImageContainer:
         elif self.imageType == InputType.empty:
             return None
 
-
 ###############################################################################################
-
-# class Target():
-#     def __init__(self, imagePath, saliencyPath,
-#                  imageState=LoadState.unloaded, imageType=InputType.image,
-#                  saliencyState=LoadState.unloaded, saliencyType=InputType.saliencyMapMatlab):
-#         self.image = ImageContainer(imagePath, imageType, imageState)
-#         self.saliency = ImageContainer(saliencyPath, saliencyType, saliencyState)
 
 class Target():
     def __init__(self, imagePath, saliencyPath,fixationPath, weimapPath,
@@ -129,15 +121,3 @@ class Target():
         self.saliency = ImageContainer(saliencyPath, saliencyType, saliencyState)
         self.fixation = ImageContainer(fixationPath, fixationType, fixationState)
         self.weimap = ImageContainer(weimapPath, weimapType, weimapState)
-'''       
-        
-class Target():
-    def __init__(self, imagePath, saliencyPath,fixationPath,
-                 imageState=LoadState.unloaded, imageType=InputType.image,
-                 saliencyState=LoadState.unloaded, saliencyType=InputType.saliencyMapMatlab,
-                 fixationState=LoadState.unloaded, fixationType=InputType.fixationMapMatlab):          
-        
-        self.image = ImageContainer(imagePath, imageType, imageState)
-        self.saliency = ImageContainer(saliencyPath, saliencyType, saliencyState)
-        self.fixation = ImageContainer(fixationPath, fixationType, fixationState)
-'''
