@@ -70,9 +70,6 @@ def salgan_batch_iterator(model, train_data, validation_sample):
     
     adaptive_Glr = 3e-5
     adaptive_Dlr = 3e-5
-    
-    #SampleMap = np.expand_dims(np.expand_dims( cv2.imread('/home/fchang/Bureau/salgan360_finetune/datasets/FoV180_WeightMap_500012.png')[:,:,0]/255.0, axis=0), axis=0)
-    #SampleMap = np.repeat(SampleMap, model.batch_size, axis=0)
    
     for current_epoch in tqdm(range(num_epochs), ncols=20):
         
@@ -112,7 +109,7 @@ def salgan_batch_iterator(model, train_data, validation_sample):
           
             batch_output_wei = np.asarray([ (y.weimap.data.astype(theano.config.floatX) +1.0 )/255. for y in currChunk], dtype=theano.config.floatX)
             batch_output_wei = np.expand_dims(batch_output_wei, axis=1)
-            #pdb.set_trace()
+            
             # train generator with one batch and discriminator with next batch
             if n_updates % 2 == 0:
                 G_obj, D_obj, G_cost, KLsc, CCsc, NSSsc, prediction = model.G_trainFunction(batch_input, batch_output_sal, batch_output_fixa, batch_output_wei, inv_sigmaKL, inv_sigmaCC, inv_sigmaNSS, adaptive_Glr)
