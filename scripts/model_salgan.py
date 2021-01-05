@@ -206,7 +206,7 @@ class ModelSALGAN(Model):
         #model1
         
         #train_err = lasagne.objectives.binary_crossentropy(prediction_pooled, output_var_sal_pooled).mean()
-        #+ 1e-4 * lasagne.regularization.regularize_network_params(self.net[output_layer_name], lasagne.regularization.l2)
+        + 1e-4 * lasagne.regularization.regularize_network_params(self.net[output_layer_name], lasagne.regularization.l2)
         #pdb.set_trace()
         # Define loss function and input data
         ones = T.ones(disc_lab.shape)
