@@ -29,7 +29,7 @@
 
 ## Usage
 Replace ```01-data_preprocessing.py```, ```02-train.py```, ```03-predict.py```, ```model_salgan.py```, ```dataRepresentation.py```, ```model.py``` and ``` utils.py ``` in SalGAN. 
-- Test: To predict saliency maps, run ```MV-Salgan360.m``` after specifying the path to images and the path to the output saliency maps
+- Test: To predict saliency maps, run ```MV-salgan360.m``` after specifying the path to images and the path to the output saliency maps
 - Train: 
    - 1. Run ```preprocessing_trainingdata.m``` to transfer 360° images into multiple viewports.
    - 2. Run ```01-data_preprocessing.py``` to make pickle files of training images.
