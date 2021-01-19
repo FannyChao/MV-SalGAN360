@@ -76,34 +76,35 @@ end
 
 
 fprintf('Fusing saliency maps for FoV120...\n');
-saliencyList = dir(fov120_pred_vp);
-im_cub_sal = zeros(iml, iml, 6, 3);
-im_salgan_0 = zeros(iml,iml*2);
+fov120 = zeros(1024, 1024, 3, 6);
+im_salgan_0 = zeros(1024, 1024*2, 1);
+    
 
-for v = 1:length(headmove_v)
+for v = 1:length(headmove_v)  
     for h=1:length(headmove_h)
-
     for i=1:6
-        filename = saliencyList(i+(v-1)*6*length(headmove_v)+(h-1)*6+2).name
-        filefolder = saliencyList(i+(v-1)*6*length(headmove_v)+(h-1)*6+2).folder;
-        cubsal = double(imread([filefolder '/', filename]));
-        cubsal = imresize(cubsal, [iml iml]);
-        im_cub_sal(:,:,i,1) = cubsal;
-        im_cub_sal(:,:,i,2) = cubsal;
-        im_cub_sal(:,:,i,3) = cubsal;
+        filename = saliencyList(i+(v-1)*6*length(headmove_h)+(h-1)*6).name
+        cubsal = double(imresize(imread([outfolder 'predi_salmap/' filename]), [1026, 1026]));
+        fov120(:,:,1,i) = cubsal(217:217+591, 217:217+591);
+        fov120(:,:,2,i) = cubsal(217:217+591, 217:217+591);
+        fov120(:,:,3,i) = cubsal(217:217+591, 217:217+591);
+        
     end    
-[hv, rest] = strtok(filename,'_');
-hv = str2double(hv);
-hh = str2double(strtok(rest,'_'));
-im_salgan = cubic2equi(0,im_cub_sal(:,:,5,:), im_cub_sal(:,:,6,:), im_cub_sal(:,:,4,:), im_cub_sal(:,:,2,:), im_cub_sal(:,:,1,:), im_cub_sal(:,:,3,:));
-out = equi2cubic(im_salgan, iml, vfov120, -headmove_v(hv));
+[hv, rest] = strtok(filename(6:end),'_');
+hv = str2double(rest(2));
+hh = str2double(rest(3));
+im_salgan = cubic2equi(0, fov120(:,:,:,5), fov120(:,:,:,6), fov120(:,:,:,4), fov120(:,:,:,2), fov120(:,:,:,1), fov120(:,:,:,3));
+out = equi2cubic(im_salgan, 1024, 90, -headmove_v(hv));
+
 im_salgan = cubic2equi(-headmove_h(hh),cell2mat(out(5)),cell2mat(out(6)),cell2mat(out(4)),cell2mat(out(2)),cell2mat(out(1)),cell2mat(out(3)));
 im_salgan = im_salgan(:,:,1);
-im_salgan = double(im_salgan)+im_salgan_0;
+im_salgan = double(im_salgan) + im_salgan_0;
 im_salgan_0 = im_salgan;
     end
 end
-im_salgan = im_salgan./(h*v)./255;
+
+im_salgan = im_salgan./(h*v);
+im_salgan = im_salgan./max(im_salgan(:)*255);
 im_salgan120 = imresize(im_salgan, [1024 2048]);
 
 
@@ -136,15 +137,16 @@ im_salgan = double(im_salgan)+im_salgan_0;
 im_salgan_0 = im_salgan;
     end
 end
-im_salgan = im_salgan./(h*v)./255;
-im_salgan90 = imresize(im_salgan, [1024 2048]
-
+im_salgan = im_salgan./(h*v);
+im_salgan = im_salgan./max(im_salgan(:)*255);
+im_salgan90 = imresize(im_salgan, [1024 2048]);
 
 
 
 fprintf('Fusing 3 FoVs saliency maps...\n');
 
 Gsalmap = double(imread([Gfolder '/' fileName]));
+Gsalmap = Gsalmap./max(Gsalmap(:)*255);
 Gsalmap = imresize(Gsalmap, [1024 2048]);
 
 Msalmap = im_salgan120;
