@@ -58,16 +58,6 @@ class ModelBCE(Model):
         prediction_pooled = T.signal.pool.pool_2d(prediction, (4, 4), mode="average_exc_pad", ignore_border=True)
 
         #bce = lasagne.objectives.binary_crossentropy(prediction_pooled, output_var_pooled).mean()
-        #train_err = bce
-        KLmiu = 2.4948
-        KLstd = 1.7421
-        CCmiu = 0.3932
-        CCstd = 0.2565
-        NSSmiu = 0.4539
-        NSSstd = 0.2631
-        bcemiu = 0.3194
-        bcestd = 0.1209
-        #train_err = bcemiu+bcestd*((3.)*((KL_div(prediction_pooled, output_var_sal_pooled)-KLmiu)/KLstd) - (1.)*((CC(prediction_pooled, output_var_sal_pooled)-CCmiu)/CCstd) - (1.)*((NSS(prediction_pooled, output_var_fixa_pooled)-NSSmiu)/NSSstd))
         train_err = (1.)*(KL_div(prediction_pooled, output_var_sal_pooled)) - (1.)*((CC(prediction_pooled, output_var_sal_pooled))) - (1.)*((NSS(prediction_pooled, output_var_fixa_pooled)))
 
         # parameters update and training
