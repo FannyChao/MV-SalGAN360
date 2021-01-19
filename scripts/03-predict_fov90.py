@@ -24,7 +24,7 @@ def main(in_folder, out_folder):
     # Create network
     model = ModelBCE(256, 192, batch_size=8)
     # Here need to specify the epoch of model sanpshot
-    load_weights(model.net['output'], path= '/home/fchang/Bureau/salgan360_finetune/datasets/salient360_18/adft120/adft9_4_wei_5000_8/1845_120_gen_', epochtoload=40, layernum=54)
+    load_weights(model.net['output'], path= 'gen_pretrained/1845_90_gen_modelWeights0180', epochtoload=40, layernum=54)
     #load_weights(model.net['output'], path= 'gen_',epochtoload=90, layernum=54)
     # Here need to specify the path to images and output path
     test(path_to_images=in_folder, path_output_maps=out_folder, model_to_test=model)
